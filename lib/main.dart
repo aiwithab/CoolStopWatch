@@ -32,6 +32,9 @@ class _DashboardState extends State<Dashboard> {
     double temp = second * 0.6;
     double adjustedSeconds = second + temp;
 
+    double tempmin = min * 0.6;
+    double adjustedMinutes = min + tempmin;
+
 
     Color dialColor = Colors.blue;
     labelColor = dialColor;
@@ -43,6 +46,16 @@ class _DashboardState extends State<Dashboard> {
         ]
       )
     ];
+
+    if(min > 0) {
+      labelColor = Colors.green;
+      data.removeAt(0);
+      data.add(
+        new CircularStackEntry(
+          [new CircularSegmentEntry(adjustedMinutes, Colors.green)]
+        )
+      );
+    }
 
     return data;
   }
@@ -63,6 +76,13 @@ class _DashboardState extends State<Dashboard> {
       int minutes = (seconds / 60).truncate();
       setState(() {
         elapsedTime = transformMillisecond(watch.elapsedMilliseconds);
+
+        if (seconds > 59) {
+          seconds = seconds - (59 * minutes);
+          seconds = seconds - minutes;
+        }
+
+
         List<CircularStackEntry> data = _generateChartData(minutes, seconds);
         _chartKey.currentState.updateData(data);
       });
